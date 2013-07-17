@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/balanced/balanced-android.png)](https://travis-ci.org/balanced/balanced-android)
 
-iOS library for working with Balanced Payments.
-Current version : 0.4
+Android library for working with Balanced Payments.
+Current version : 0.1-SNAPSHOT
 
 ## Requirements
 
@@ -78,8 +78,6 @@ Use a HashMap for additional card fields you wish to specify.
 	}
 
 #### Create a bank account object
-
-##### With only required fields
 
     BankAccount bankAccount = new BankAccount("053101273", "111111111111", AccountType.CHECKING, "Johann Bernoulli");
 
