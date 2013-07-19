@@ -30,16 +30,16 @@ public class Card {
    private int expirationMonth;
    private int expirationYear;
    private String number;
-   private HashMap optionalFields;
+   private HashMap<String, String> optionalFields;
    private String securityCode;
-   private ArrayList errors;
+   private ArrayList<String> errors;
    private boolean valid;
    
    public Card(String cardNumber, int expirationMonth, int expirationYear, String securityCode) {
       this(cardNumber, expirationMonth, expirationYear, securityCode, null);
    }
    
-   public Card(String cardNumber, int expMonth, int expYear, String code, HashMap optFields) {
+   public Card(String cardNumber, int expMonth, int expYear, String code, HashMap<String, String> optFields) {
       if (cardNumber != null) {
          number = cardNumber.replaceAll("[^\\d]", "");
       }
@@ -47,7 +47,7 @@ public class Card {
       expirationYear = expYear;
       securityCode = code;
       optionalFields = optFields;
-      errors = new ArrayList();
+      errors = new ArrayList<String>();
       
       validate();
    }
@@ -125,7 +125,7 @@ public class Card {
       return securityCode;
    }
    
-   protected HashMap getOptionalFields() {
+   protected HashMap<String, String> getOptionalFields() {
       return optionalFields;
    }
    
@@ -157,7 +157,7 @@ public class Card {
       return valid;
    }
    
-   public ArrayList getErrors() {
+   public ArrayList<String> getErrors() {
       return errors;
    }
 }

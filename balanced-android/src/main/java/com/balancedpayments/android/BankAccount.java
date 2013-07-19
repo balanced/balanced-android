@@ -12,8 +12,8 @@ public class BankAccount {
    private String routingNumber;
    private String accountNumber;
    private String name;
-   private HashMap optionalFields;
-   private ArrayList errors;
+   private HashMap<String, String> optionalFields;
+   private ArrayList<String> errors;
    public static enum AccountType {
       UNKNOWN,
       CHECKING,
@@ -26,13 +26,13 @@ public class BankAccount {
       this(routingNum, accountNum, accountType, accountName, null);
    }
    
-   public BankAccount(String routingNum, String accountNum, AccountType accountType, String accountName, HashMap optFields) {
+   public BankAccount(String routingNum, String accountNum, AccountType accountType, String accountName, HashMap<String, String> optFields) {
       routingNumber = routingNum;
       accountNumber = accountNum;
       type = accountType;
       name = accountName;
       optionalFields = optFields;
-      errors = new ArrayList();
+      errors = new ArrayList<String>();
       
       validate();
    }
@@ -107,7 +107,7 @@ public class BankAccount {
     * 
     * @return ArrayList of errors
     */
-   public ArrayList getErrors() {
+   public ArrayList<String> getErrors() {
       return errors;
    }
    
@@ -143,7 +143,7 @@ public class BankAccount {
     * 
     * @return HashMap of optional fields
     */
-   protected HashMap getOptionalFields() {
+   protected HashMap<String, String> getOptionalFields() {
       return optionalFields;
    }
       

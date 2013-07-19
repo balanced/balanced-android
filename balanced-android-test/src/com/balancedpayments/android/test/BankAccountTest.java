@@ -1,12 +1,11 @@
-package com.balancedpayments.android;
+package com.balancedpayments.android.test;
 
+import com.balancedpayments.android.BankAccount;
 import com.balancedpayments.android.BankAccount.AccountType;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import junit.framework.TestCase;
 
-public class BankAccountTest extends TestCase {
-   
+import android.test.AndroidTestCase;
+
+public class BankAccountTest extends AndroidTestCase {
    public void testValidRoutingNumbers() {
       String[] routingNumbers = { "053101273",
                                   "114900685",

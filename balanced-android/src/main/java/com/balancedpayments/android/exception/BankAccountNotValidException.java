@@ -8,18 +8,18 @@ import java.util.ArrayList;
  * @author Ben Mills
  */
 public class BankAccountNotValidException extends Exception {
-   private ArrayList errors;
+   private ArrayList<String> errors;
    
    public BankAccountNotValidException(String message) {
       this(message, null);
    }
    
-   public BankAccountNotValidException(String message, ArrayList errorList) {
+   public BankAccountNotValidException(String message, ArrayList<String> errorList) {
       super(message);
       errors = errorList;
    }
    
-   public ArrayList getErrors() {
+   public ArrayList<String> getErrors() {
       return errors;
    }
 }

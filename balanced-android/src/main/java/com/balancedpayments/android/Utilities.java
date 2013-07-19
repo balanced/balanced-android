@@ -47,7 +47,7 @@ public class Utilities {
       String systemVersion = android.os.Build.VERSION.RELEASE;
       String carrier = manager.getNetworkOperatorName();
       String ip;
-      String macAddress;
+      String macAddress = "";
       if (carrier == null || carrier.equals("") || carrier.equals("Android")) {
          carrier = "Wi-Fi";
          ip = "";
@@ -75,6 +75,10 @@ public class Utilities {
       if (! ip.equals("")) {
          agent += ip + ";";
       }
+      
+      if (! macAddress.equals("")) {
+          agent += macAddress + ";";
+       }
       
       agent += carrier;
       

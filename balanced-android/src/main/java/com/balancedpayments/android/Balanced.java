@@ -84,7 +84,7 @@ public class Balanced
                                           + response.getStatusLine().getStatusCode());
             }
             
-            Map jsonResponse = deserialize(jsonData);
+            Map<String, Object> jsonResponse = deserialize(jsonData);
             
             if (statusCode == 402) {
                throw new CardDeclinedException((String)jsonResponse.get("description"));
@@ -154,7 +154,7 @@ public class Balanced
                throw new RuntimeException("Failed : Error " + response.getStatusLine().getStatusCode());
             }
             
-            Map jsonResponse = deserialize(jsonData);
+            Map<String, Object> jsonResponse = deserialize(jsonData);
             
             if (statusCode == 400) {
                throw new BankAccountRoutingNumberInvalidException((String)jsonResponse.get("description"));
