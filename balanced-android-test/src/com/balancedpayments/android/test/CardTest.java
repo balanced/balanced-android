@@ -9,7 +9,7 @@ import com.balancedpayments.android.Card;
 import com.balancedpayments.android.Card.CardType;
 
 public class CardTest extends TestCase {
-   /*public void testIsValidWithValidCardNumbers() {
+   public void testIsValidWithValidCardNumbers() {
       String[] cardNumbers = { "4111111111111111",
                                "4444444444444448",
                                "4222222222222220",
@@ -253,5 +253,5 @@ public class CardTest extends TestCase {
       assertFalse(card.isValid());
       assertFalse(card.getErrors().isEmpty());
       assertTrue(card.getErrors().contains("Security code is not valid"));
-   }*/
+   }
 }

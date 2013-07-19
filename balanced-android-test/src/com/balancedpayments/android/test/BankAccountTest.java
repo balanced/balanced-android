@@ -6,7 +6,7 @@ import com.balancedpayments.android.BankAccount.AccountType;
 import android.test.AndroidTestCase;
 
 public class BankAccountTest extends AndroidTestCase {
-   /*public void testValidRoutingNumbers() {
+   public void testValidRoutingNumbers() {
       String[] routingNumbers = { "053101273",
                                   "114900685",
                                   "113002186",
@@ -181,5 +181,5 @@ public class BankAccountTest extends AndroidTestCase {
       assertFalse(ba.isValid());
       assertFalse(ba.getErrors().isEmpty());
       assertTrue(ba.getErrors().contains("Account type must be \"checking\" or \"savings\""));
-   }*/
+   }
 }
