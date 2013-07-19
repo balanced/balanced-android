@@ -27,3 +27,5 @@ target/
 *.jar
 *.war
 *.ear
+
+!balanced-android-test/libs/*
