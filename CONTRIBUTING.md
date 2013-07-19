@@ -25,6 +25,15 @@ Open ADT. Go to File -> Import -> General -> Existing Projects into Workspace.
 
 Select the folder containg both balanced-android and balanced-android-example.
 
+Finish the import
+
+#### Project Setup
+
+Create local.properties in balanced-android-test with the contents:
+
+    sdk.dir=/path/to/android/sdk
+
+Example: ```sdk.dir=/Users/me/Development/Java/adt-bundle-mac-x86_64-20130522/sdk```
 
 ### Building the Projects
 
