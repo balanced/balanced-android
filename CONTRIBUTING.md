@@ -14,7 +14,9 @@ balanced-android and balanced-android-test have been primarily built and tested 
 Go to Help -> Install New Software...
 
 Select "Juno - http://download.eclipse.org/releases/juno" for the "Work with" field
+
 Expand "General Purpose tools"
+
 Select "m2e - Maven Integration for Eclipse"
 
 ##### Import the projects
