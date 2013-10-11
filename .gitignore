@@ -31,3 +31,14 @@ target/
 
 !balanced-android-test/libs/*.jar
 *balanced-android.jar
+
+#IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+out
+
+# Gradle folder
+.gradle/
+build/
