@@ -1,0 +1,75 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+
+apply plugin: 'android-library'
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion = 17
+
+    sourceSets {
+        defaultConfig {
+            testPackageName 'com.balancedpayments.android.test'
+        }
+
+        main {
+            assets.srcDirs       = ['balanced-android/assets']
+            res.srcDirs          = ['balanced-android/res']
+            aidl.srcDirs         = ['balanced-android/src']
+            resources.srcDirs    = ['balanced-android/src']
+            renderscript.srcDirs = ['balanced-android/src']
+            java.srcDirs         = ['balanced-android/src']
+            manifest.srcFile 'balanced-android/AndroidManifest.xml'
+        }
+
+        instrumentTest {
+            assets.srcDirs    = ["balanced-android-test/assets"]
+            res.srcDirs       = ["balanced-android-test/res"]
+            resources.srcDirs = ["balanced-android-test/src"]
+            java.srcDirs      = ["balanced-android-test/src"]
+        }
+    }
+
+    dependencies {
+        repositories {
+            mavenCentral()
+            mavenLocal()
+        }
+
+        compile 'com.google.code.gson:gson:2.2.+'
+
+        instrumentTestCompile 'junit:junit:4.8.2'
+    }
+}
+
+
+task apklib(type: Zip) {
+    appendix = extension = 'apklib'
+
+    from 'balanced-android/AndroidManifest.xml'
+    into('res') {
+        from 'balanced-android/res'
+    }
+    into('src') {
+        from 'balanced-android/src'
+    }
+    into('assets') {
+        from 'balanced-android/assets'
+    }
+}
+
+task jar(type: Jar) {
+    from android.sourceSets.main.java
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.8'
+}
