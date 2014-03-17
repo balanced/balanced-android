@@ -1,17 +1,9 @@
 package com.balancedpayments.android;
 
 import android.content.Context;
-import com.balancedpayments.android.exception.BankAccountNotValidException;
-import com.balancedpayments.android.exception.BankAccountRoutingNumberInvalidException;
-import com.balancedpayments.android.exception.CardDeclinedException;
+import com.balancedpayments.android.exception.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -19,163 +11,144 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import com.balancedpayments.android.exception.CardNotValidatedException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Class for card tokenization to Balanced Payments
- * 
- * @author Ben Mills
+ * Class for adding credit card and bank account information to Balanced Payments
  */
 public class Balanced
 {
-   public static final String VERSION = "0.1-SNAPSHOT";
-   private static String API_URL = "https://js.balancedpayments.com";
+   public static final String VERSION = "1.0-SNAPSHOT";
+   private static String API_URL = "https://api.balancedpayments.com";
+   private static String API_VERSION = "1.1";
    private static int connectionTimeout = 6000;
    private static int socketTimeout = 6000;
-   private String marketplaceURI;
    private Context appContext;
-   
-   public Balanced(String uri, Context context) {
-      marketplaceURI = uri;
+
+   public enum BPFundingInstrumentType {
+      Card,
+      BankAccount
+   }
+
+   public Balanced(Context context) {
       appContext = context;
    }
 
-   public String tokenizeCard(Card card) throws Exception {
-      if (card.isValid()) {
-         try {
-            HttpParams httpParameters = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParameters, connectionTimeout);
-            HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
-            DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-            HttpPost request = new HttpPost(API_URL + marketplaceURI + "/cards");
-
-            request.setHeader("accept", "application/json");
-            request.setHeader("Content-Type", "application/json");
-            request.setHeader("User-Agent", Utilities.getUserAgentString(appContext));
-            
-            HashMap<String, String> params = new HashMap<String, String>();
-            params.put("card_number", card.getNumber());
-            params.put("expiration_month", Integer.toString(card.getExpirationMonth()));
-            params.put("expiration_year", Integer.toString(card.getExpirationYear()));
-            params.put("language", Utilities.getLocale());
-            params.put("security_code", card.getSecurityCode());
-            params.put("system_timezone", Utilities.getTimeZoneOffset());
-
-            if (card.getOptionalFields() != null) {
-               params.putAll(card.getOptionalFields());
-            }
-
-            request.setEntity(new StringEntity(serialize(params), "UTF8"));
-            HttpResponse response = httpClient.execute(request);
-
-            BufferedReader br = new BufferedReader(
-                  new InputStreamReader((response.getEntity().getContent())));
-
-            String responseData;
-            String jsonData = "";
-            while ((responseData = br.readLine()) != null) {
-               jsonData += responseData;
-            }
-            
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != 201 && statusCode != 402 && statusCode != 409) {
-               System.out.println("blah");
-               throw new RuntimeException("Failed : HTTP error code : "
-                                          + response.getStatusLine().getStatusCode());
-            }
-            
-            Map<String, Object> jsonResponse = deserialize(jsonData);
-            
-            if (statusCode == 402) {
-               throw new CardDeclinedException((String)jsonResponse.get("description"));
-            }
-            
-            if (statusCode == 409) {
-               throw new CardNotValidatedException((String)jsonResponse.get("description"));
-            }
-            
-            httpClient.getConnectionManager().shutdown();
-            
-            return (String)jsonResponse.get("uri");
-         }
-         catch (MalformedURLException e) {
-            e.printStackTrace();
-         }
-         catch (IOException e) {
-            e.printStackTrace();
-         }
-      }
-      else {
-         throw new CardNotValidatedException("Card is not valid");
-      }
-      
-      return "";
+   public Map<String, Object> createCard(String number, Integer expMonth, Integer expYear) throws CreationFailureException, FundingInstrumentNotValidException {
+      return createCard(number, expMonth, expYear, null);
    }
-   
-   public String tokenizeBankAccount(BankAccount bankAccount) throws Exception {
-      if (bankAccount.isValid()) {
-         try {
-            HttpParams httpParameters = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParameters, connectionTimeout);
-            HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
-            DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
-            HttpPost request = new HttpPost(API_URL + marketplaceURI + "/bank_accounts");
 
-            request.setHeader("accept", "application/json");
-            request.setHeader("Content-Type", "application/json");
-            request.setHeader("User-Agent", Utilities.getUserAgentString(appContext));
-            
-            HashMap<String, String> params = new HashMap<String, String>();
-            params.put("routing_number", bankAccount.getRoutingNumber());
-            params.put("account_number", bankAccount.getAccountNumber());
-            params.put("type", bankAccount.getAccountTypeAsString());
-            params.put("name", bankAccount.getName());
-            params.put("language", Utilities.getLocale());
-            params.put("system_timezone", Utilities.getTimeZoneOffset());
+   public Map<String, Object> createCard(String number,
+                                         Integer expMonth,
+                                         Integer expYear,
+                                         Map<String, Object> optionalFields)
+         throws FundingInstrumentNotValidException, CreationFailureException {
+      Card card = new Card(number, expMonth, expYear);
 
-            if (bankAccount.getOptionalFields() != null) {
-               params.putAll(bankAccount.getOptionalFields());
-            }
+      if (card.isValid()) {
+         HashMap<String, Object> payload = new HashMap<String, Object>();
+         payload.put("number", card.getNumber());
+         payload.put("expiration_month", Integer.toString(card.getExpirationMonth()));
+         payload.put("expiration_year", Integer.toString(card.getExpirationYear()));
 
-            request.setEntity(new StringEntity(serialize(params), "UTF8"));
-            HttpResponse response = httpClient.execute(request);
-
-            BufferedReader br = new BufferedReader(
-                  new InputStreamReader((response.getEntity().getContent())));
-
-            String responseData;
-            String jsonData = "";
-            while ((responseData = br.readLine()) != null) {
-               jsonData += responseData;
-            }
-            
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != 201 && statusCode != 400) {
-               throw new RuntimeException("Failed : Error " + response.getStatusLine().getStatusCode());
-            }
-            
-            Map<String, Object> jsonResponse = deserialize(jsonData);
-            
-            if (statusCode == 400) {
-               throw new BankAccountRoutingNumberInvalidException((String)jsonResponse.get("description"));
-            }
-            
-            httpClient.getConnectionManager().shutdown();
-            
-            return (String)jsonResponse.get("uri");
+         if (optionalFields != null && optionalFields.size() > 0) {
+            payload.putAll(optionalFields);
          }
-         catch (MalformedURLException e) {
-            e.printStackTrace();
-         }
-         catch (IOException e) {
-            e.printStackTrace();
-         }
+
+         return createFundingInstrument(payload, Balanced.BPFundingInstrumentType.Card);
       }
       else {
-         throw new BankAccountNotValidException("Bank account is not valid", bankAccount.getErrors());
+         throw new FundingInstrumentNotValidException("Card is not valid");
       }
-      
-      return "";
+   }
+
+   public Map<String, Object> createBankAccount(String routingNum,
+                                                String accountNum,
+                                                BankAccount.AccountType accountType,
+                                                String accountName)
+         throws CreationFailureException, FundingInstrumentNotValidException {
+      return createBankAccount(routingNum, accountNum, accountType, accountName, null);
+   }
+
+   public Map<String, Object> createBankAccount(String routingNum,
+                                                String accountNum,
+                                                BankAccount.AccountType accountType,
+                                                String accountName,
+                                                HashMap<String, Object> optionalFields)
+         throws FundingInstrumentNotValidException, CreationFailureException {
+      BankAccount bankAccount = new BankAccount(routingNum, accountNum, accountType, accountName, optionalFields);
+
+      if (bankAccount.isValid()) {
+         HashMap<String, Object> payload = new HashMap<String, Object>();
+         payload.put("routing_number", routingNum);
+         payload.put("account_number", accountNum);
+         payload.put("name", accountName);
+         payload.put("account_type", accountType);
+
+         if (optionalFields != null && optionalFields.size() > 0) {
+            payload.putAll(optionalFields);
+         }
+
+         return createFundingInstrument(payload, BPFundingInstrumentType.BankAccount);
+      }
+      else {
+         throw new FundingInstrumentNotValidException("Card is not valid");
+      }
+   }
+
+   public Map<String, Object> createFundingInstrument(Map<String, Object> payload, BPFundingInstrumentType type) throws CreationFailureException {
+      payload.put("meta", Utilities.capabilities(appContext));
+      try {
+         HttpParams httpParameters = new BasicHttpParams();
+         HttpConnectionParams.setConnectionTimeout(httpParameters, connectionTimeout);
+         HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
+         DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters);
+         HttpPost request = new HttpPost(
+               API_URL +
+               (type.equals(BPFundingInstrumentType.Card) ? "/cards" : "/bank_accounts")
+         );
+
+         request.setHeader("accept", "application/json");
+         request.setHeader("Content-Type", "application/json");
+         request.setHeader("User-Agent", Utilities.userAgentString());
+
+         request.setEntity(new StringEntity(serialize(payload), "UTF8"));
+         HttpResponse response = httpClient.execute(request);
+
+         BufferedReader br = new BufferedReader(
+               new InputStreamReader((response.getEntity().getContent())));
+
+         String responseData;
+         String jsonData = "";
+         while ((responseData = br.readLine()) != null) {
+            jsonData += responseData;
+         }
+
+         int statusCode = response.getStatusLine().getStatusCode();
+         Map<String, Object> jsonResponse = deserialize(jsonData);
+
+         if (statusCode != 201) {
+            throw new CreationFailureException((String)jsonResponse.get("description"));
+         }
+
+         httpClient.getConnectionManager().shutdown();
+
+         jsonResponse.put("status_code", statusCode);
+
+         return jsonResponse;
+      }
+      catch (MalformedURLException e) {
+         throw new RuntimeException(e.getMessage());
+      }
+      catch (IOException e) {
+         throw new RuntimeException(e.getMessage());
+      }
    }
 
    private String serialize(Object payload) {

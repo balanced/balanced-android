@@ -1,11 +1,15 @@
 package com.balancedpayments.android;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
-import java.net.*;
+import org.apache.http.conn.util.InetAddressUtils;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import org.apache.http.conn.util.InetAddressUtils;
 
 /** 
  * Utility methods
@@ -13,31 +17,9 @@ import org.apache.http.conn.util.InetAddressUtils;
  * @author Ben Mills
  */
 public class Utilities {
-   protected static String getLocale() {
-      String locale = Locale.getDefault().getLanguage() + "_" + Locale.getDefault().getCountry();
-      
-      return locale;
-   }
-   
-   /**
-    * Get the current time zone offset.
-    * 
-    * @return time zone offset as string
-    */
-   protected static String getTimeZoneOffset() {
-      Calendar mCalendar = new GregorianCalendar();
-      TimeZone mTimeZone = mCalendar.getTimeZone();
-      int mGMTOffset = mTimeZone.getOffset(mCalendar.getTimeInMillis());
-      return Long.toString(TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS));
-   }
-   
-   /**
-    * Create user agent string
-    * 
-    * @param context Android application context
-    * @return user agent string 
-    */
-   protected static String getUserAgentString(Context context) {
+
+   protected static Map<String, String> capabilities(Context context) {
+
       TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
       String device = android.os.Build.MANUFACTURER;
       if (device == null || device.equals("unknown")) {
@@ -58,33 +40,44 @@ public class Utilities {
          ip = Utilities.getIPAddress(true);
          macAddress = Utilities.getMACAddress("wlan0");
       }
-      
-      String agent = context.getPackageName() +
-                     " balanced-android " +
-                     Balanced.VERSION + ";" +
-                     device + ";";
-      
-      if (model != null) {
-         agent += model + ";";
-      }
-      
-      if (systemVersion != null) {
-         agent += systemVersion + ";";
-      }
-      
-      if (! ip.equals("")) {
-         agent += ip + ";";
-      }
-      
-      if (! macAddress.equals("")) {
-          agent += macAddress + ";";
-       }
-      
-      agent += carrier;
-      
-      return agent;
+
+      HashMap<String, String> capabilities = new HashMap<String, String>();
+
+      capabilities.put("capabilities_system_timezone", getTimeZoneOffset());
+      capabilities.put("capabilities_user_agent", userAgentString());
+      capabilities.put("capabilities_ip_address", ip);
+      capabilities.put("capabilities_mac_address", macAddress);
+      capabilities.put("capabilities_device_model", model);
+      capabilities.put("capabilities_system_version", systemVersion);
+      capabilities.put("capabilities_device_name", device);
+      capabilities.put("capabilities_carrier", carrier);
+      capabilities.put("capabilities_language", getLocale());
+
+      //[[[NSBundle mainBundle] bundleIdentifier] length] > 0 ? [[NSBundle mainBundle] bundleIdentifier] : @"Unspecified Bundle ID", @"capabilities_bundle_identifier",
+      return capabilities;
    }
-   
+
+   /**
+    * Assemble and return the user agent string.
+    *
+    * @return user agent as string
+    */
+   protected static String userAgentString() {
+      return "balanced-android/" + Balanced.VERSION;
+   }
+
+   /**
+    * Get the current time zone offset.
+    *
+    * @return time zone offset as string
+    */
+   protected static String getTimeZoneOffset() {
+      Calendar mCalendar = new GregorianCalendar();
+      TimeZone mTimeZone = mCalendar.getTimeZone();
+      int mGMTOffset = mTimeZone.getOffset(mCalendar.getTimeInMillis());
+      return Long.toString(TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS));
+   }
+
    /**
     * Returns MAC address of the given interface name.
     *
@@ -113,7 +106,7 @@ public class Utilities {
          }
       }
       catch (Exception ex) {} // ignore exceptions
-      
+
       return "";
    }
 
@@ -149,7 +142,23 @@ public class Utilities {
          }
       }
       catch (Exception ex) {} // ignore exceptions
-      
+
       return "";
+   }
+
+   protected static String getLocale() {
+      String locale = Locale.getDefault().getLanguage() + "-" + Locale.getDefault().getCountry();
+      
+      return locale;
+   }
+
+   private String getSoftwareVersion(Context context) {
+      PackageInfo pi;
+      try {
+         pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+         return pi.versionName;
+      } catch (final PackageManager.NameNotFoundException e) {
+         return "na";
+      }
    }
 }

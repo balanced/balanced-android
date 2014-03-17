@@ -10,7 +10,7 @@ import java.util.HashMap;
  * 
  * @author Ben Mills
  */
-public class Card {
+public class Card extends FundingInstrument {
    public static final String OptionalFieldKeyNameOnCard = "name";
    public static final String OptionalFieldKeyStreetAddress = "street_address";
    public static final String OptionalFieldKeyPhoneNumber = "phone_number";
@@ -30,22 +30,20 @@ public class Card {
    private int expirationMonth;
    private int expirationYear;
    private String number;
-   private HashMap<String, String> optionalFields;
-   private String securityCode;
+   private HashMap<String, Object> optionalFields;
    private ArrayList<String> errors;
    private boolean valid;
    
-   public Card(String cardNumber, int expirationMonth, int expirationYear, String securityCode) {
-      this(cardNumber, expirationMonth, expirationYear, securityCode, null);
+   public Card(String cardNumber, int expirationMonth, int expirationYear) {
+      this(cardNumber, expirationMonth, expirationYear, null);
    }
    
-   public Card(String cardNumber, int expMonth, int expYear, String code, HashMap<String, String> optFields) {
+   public Card(String cardNumber, int expMonth, int expYear, HashMap<String, Object> optFields) {
       if (cardNumber != null) {
          number = cardNumber.replaceAll("[^\\d]", "");
       }
       expirationMonth = expMonth;
       expirationYear = expYear;
-      securityCode = code;
       optionalFields = optFields;
       errors = new ArrayList<String>();
       
@@ -64,15 +62,6 @@ public class Card {
       }
 
       return (total % 10) == 0;
-   }
-   
-   private boolean isSecurityCodeValid() {
-      if (securityCode == null) { return false; }
-      if (securityCode.length() == 0) { return false; }
-      if (type == CardType.UNKNOWN) { return false; }
-      int requiredLength = (type == CardType.AMERICANEXPRESS) ? 4 : 3;
-      
-      return securityCode.length() == requiredLength;
    }
    
    private boolean isExpired() {
@@ -97,10 +86,6 @@ public class Card {
       if (isExpired()) {
         errors.add("Card is expired");
       }
-    
-      if (!isSecurityCodeValid()) {
-        errors.add("Security code is not valid");
-      }
       
       if (!errors.isEmpty()) {
          isValid = false;
@@ -121,11 +106,7 @@ public class Card {
       return expirationYear;
    }
    
-   protected String getSecurityCode() {
-      return securityCode;
-   }
-   
-   protected HashMap<String, String> getOptionalFields() {
+   protected HashMap<String, Object> getOptionalFields() {
       return optionalFields;
    }
    

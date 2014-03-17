@@ -5,8 +5,8 @@ package com.balancedpayments.android.exception;
  * 
  * @author Ben Mills
  */
-public class CardNotValidatedException extends Exception {
-   public CardNotValidatedException(String message) {
+public class FundingInstrumentNotValidException extends Exception {
+   public FundingInstrumentNotValidException(String message) {
       super(message);
    }
 }
