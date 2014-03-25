@@ -57,7 +57,6 @@ Use a HashMap for additional card fields you wish to specify.
 
 ```java
 HashMap<String, String> optionalFields = new HashMap<String, String>();
-optionalFields.put(OptionalFieldKeyNameOnCard, "Test");
 optionalFields.put(OptionalFieldKeyNameOnCard, "Johann Bernoulli");
 optionalFields.put(OptionalFieldKeyStreetAddress, "123 Main Street");
 optionalFields.put(OptionalFieldKeyPostalCode, "11111");
