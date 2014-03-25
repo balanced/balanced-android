@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/balanced/balanced-android.png)](https://travis-ci.org/balanced/balanced-android)
 
-Android library for working with Balanced Payments.
-Current version : 0.1-SNAPSHOT
+Android library for tokenizing credit cards and bank accounts in Balanced Payments.
+Current version : 1.0
 
 ## Requirements
 
@@ -16,7 +16,7 @@ These should be installable via maven.
 
 ## Installation
 
-- Add balanced-android-VERSION.jar as a dependency in your project
+- balanced-android v1.0 is now an Android Library Project. Include it as such in your application.
 
 ## Usage
 
@@ -29,88 +29,112 @@ import com.balancedpayments.android.BankAccount; // Bank accounts
 import com.balancedpayments.android.exception.*; // Exceptions
 ```
 
-#### Define a marketplace URI
+#### Add a card
+
+```appContext``` should be an instance of your application's context.
 
 ```java
-private static String marketplaceURI = "/v1/marketplaces/TEST-MP11mTuSoch2Eb1vrdwsSi2i";
-```
-    
-#### Create a balanced object
-
-Instantiate a balanced instance with your marketplace URI and an Android application context.
-
-```java
-Balanced balanced = new Balanced(marketplaceURI, context);
-```
-
-#### Create a card object
-
-##### With only required fields
-
-```java
-Card card = new Card("4242424242424242", 9, 2014, "123");
-```
-
-##### With optional fields
-
-Use a HashMap for additional card fields you wish to specify.
-
-```java
-HashMap<String, String> optionalFields = new HashMap<String, String>();
-optionalFields.put(OptionalFieldKeyNameOnCard, "Johann Bernoulli");
-optionalFields.put(OptionalFieldKeyStreetAddress, "123 Main Street");
-optionalFields.put(OptionalFieldKeyPostalCode, "11111");
-
-Card card = new Card("4242424242424242", 9, 2014, "123", optionalFields);
-```
-
-#### Tokenize a card
-
-```java
-Balanced balanced = new Balanced(marketplaceURI, context);
-Card card = new Card("4242424242424242", 9, 2014, "123");
-	
-String cardURI = "";
-
-Card card = new Card("4242424242424242", 9, 2014, "123");
-Balanced balanced = new Balanced(marketplaceURI, context);
-try {
-	cardURI = balanced.tokenizeCard(card);
-}
-catch (CardNotValidatedException e) {
-	error = e;
-}
-catch (CardDeclinedException e) {
-	error = e;
-}
-catch (Exception e) {
-	e.printStackTrace();
-}
-```
-
-#### Create a bank account object
-
-```java
-BankAccount bankAccount = new BankAccount("053101273", "111111111111", AccountType.CHECKING, "Johann Bernoulli");
-```
-
-#### Tokenize a bank account
-
-```java
-String bankAccountURI = "";
-	
-Balanced balanced = new Balanced(marketplaceURI, context);
-BankAccount bankAccount = new BankAccount("053101273", "111111111111", AccountType.CHECKING, "Johann Bernoulli");
+Balanced balanced = new Balanced(appContext);
+Map<String, Object> response = null;
 
 try {
-	bankAccountURI = balanced.tokenizeBankAccount(bankAccount);
+   response = balanced.createCard("4242424242424242", 9, 2014);
 }
-catch (BankAccountRoutingNumberInvalidException e) {
-	error = e;
+catch (CreationFailureException e) {
 }
-catch (Exception e) {
-	e.printStackTrace();
+catch (FundingInstrumentNotValidException e) {
 }
+
+Map<String, Object> cardResponse = (Map<String, Object>) ((ArrayList)response.get("cards")).get(0);
+
+String cardHref = cardResponse.get("href");
+```
+
+#### Add a card with optional fields
+
+```appContext``` should be an instance of your application's context.
+
+```java
+Balanced balanced = new Balanced(appContext);
+Map<String, Object> response = null;
+
+HashMap<String, String> address = new HashMap<String, String>();
+optionalFields.put("line1", "123 Street");
+optionalFields.put("state", "CA");
+optionalFields.put("city", "San Francisco");
+optionalFields.put("postal_code", "94102");
+
+HashMap<String, Object> optionalFields = new HashMap<String, String>();
+optionalFields.put(OptionalFieldKeyName, "Johann Bernoulli");
+optionalFields.put(OptionalFieldKeyCVV, "123");
+optionalFields.put(OptionalFieldKeyAddress, address);
+
+try {
+   response = balanced.createCard("4242424242424242", 9, 2014, optionalFields);
+}
+catch (CreationFailureException e) {
+}
+catch (FundingInstrumentNotValidException e) {
+}
+
+Map<String, Object> cardResponse = (Map<String, Object>) ((ArrayList)response.get("cards")).get(0);
+
+String cardHref = cardResponse.get("href");
+```
+
+#### Add a bank account
+
+```appContext``` should be an instance of your application's context.
+
+```java
+Balanced balanced = new Balanced(appContext);
+Map<String, Object> response = null;
+
+try {
+   response = balanced.createBankAccount("021000021", "9900000002",
+                  AccountType.CHECKING, "Johann Bernoulli");
+}
+catch (CreationFailureException e) {
+}
+catch (FundingInstrumentNotValidException e) {
+}
+
+Map<String, Object> bankAccountResponse = (Map<String, Object>) ((ArrayList)response.get("bank_accounts")).get(0);
+
+String bankAccountHref = bankAccountResponse.get("href");
+```
+
+#### Add a bank account with optional fields
+
+```appContext``` should be an instance of your application's context.
+
+```java
+Balanced balanced = new Balanced(appContext);
+Map<String, Object> response = null;
+
+HashMap<String, String> address = new HashMap<String, String>();
+optionalFields.put("line1", "123 Street");
+optionalFields.put("state", "CA");
+optionalFields.put("city", "San Francisco");
+optionalFields.put("postal_code", "94102");
+
+HashMap<String, Object> optionalFields = new HashMap<String, String>();
+optionalFields.put(OptionalFieldKeyName, "Johann Bernoulli");
+optionalFields.put(OptionalFieldKeyCVV, "123");
+optionalFields.put(OptionalFieldKeyAddress, address);
+
+try {
+   response = balanced.createBankAccount("021000021", "9900000002",
+     AccountType.CHECKING, "Johann Bernoulli", optionalFields);
+}
+catch (CreationFailureException e) {
+}
+catch (FundingInstrumentNotValidException e) {
+}
+
+Map<String, Object> bankAccountResponse = (Map<String, Object>) ((ArrayList)response.get("bank_accounts")).get(0);
+
+String bankAccountHref = bankAccountResponse.get("href");
 ```
 
 ## Contributing
