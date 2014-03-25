@@ -11,14 +11,11 @@ import java.util.HashMap;
  * @author Ben Mills
  */
 public class Card extends FundingInstrument {
-   public static final String OptionalFieldKeyNameOnCard = "name";
-   public static final String OptionalFieldKeyStreetAddress = "street_address";
-   public static final String OptionalFieldKeyPhoneNumber = "phone_number";
-   public static final String OptionalFieldKeyPostalCode = "postal_code";
-   public static final String OptionalFieldKeyCity = "city";
-   public static final String OptionalFieldKeyCountryCode = "country_code";
+   public static final String OptionalFieldKeyName = "name";
+   public static final String OptionalFieldKeyCVV = "cvv";
+   public static final String OptionalFieldKeyAddress = "address";
    public static final String OptionalFieldKeyMeta = "meta";
-   public static final String OptionalFieldKeyState = "state";
+
    public static enum CardType {
       UNKNOWN,
       VISA,
