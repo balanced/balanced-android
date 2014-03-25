@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/balanced/balanced-android.png)](https://travis-ci.org/balanced/balanced-android)
 
 Android library for tokenizing credit cards and bank accounts in Balanced Payments.
+
 Current version : 1.0
 
 ## Requirements
