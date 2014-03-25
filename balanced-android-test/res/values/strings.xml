@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">Balanced-android-testTest</string>
-
+    <string name="app_name">balanced-android-test</string>
 </resources>

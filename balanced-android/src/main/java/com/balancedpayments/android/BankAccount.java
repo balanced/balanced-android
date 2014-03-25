@@ -2,34 +2,35 @@ package com.balancedpayments.android;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a bank account object
  * 
  * @author Ben Mills
  */
-public class BankAccount {
+public class BankAccount extends FundingInstrument {
    private String routingNumber;
    private String accountNumber;
    private String name;
-   private HashMap<String, String> optionalFields;
+   private HashMap<String, Object> optionalFields;
    private ArrayList<String> errors;
    public static enum AccountType {
       UNKNOWN,
       CHECKING,
       SAVINGS
    }
-   private AccountType type;
+   private AccountType accountType;
    private boolean valid;
    
    public BankAccount(String routingNum, String accountNum, AccountType accountType, String accountName) {
       this(routingNum, accountNum, accountType, accountName, null);
    }
    
-   public BankAccount(String routingNum, String accountNum, AccountType accountType, String accountName, HashMap<String, String> optFields) {
+   public BankAccount(String routingNum, String accountNum, AccountType acctType, String accountName, HashMap<String, Object> optFields) {
       routingNumber = routingNum;
       accountNumber = accountNum;
-      type = accountType;
+      accountType = acctType;
       name = accountName;
       optionalFields = optFields;
       errors = new ArrayList<String>();
@@ -58,8 +59,8 @@ public class BankAccount {
    }
    
    private boolean isAccountTypeValid() {
-      if (type == null) { return false; }
-      return (type.equals(AccountType.CHECKING) || type.equals(AccountType.SAVINGS));
+      if (accountType == null) { return false; }
+      return (accountType.equals(AccountType.CHECKING) || accountType.equals(AccountType.SAVINGS));
    }
    
    private boolean isNameValid() {
@@ -143,12 +144,12 @@ public class BankAccount {
     * 
     * @return HashMap of optional fields
     */
-   protected HashMap<String, String> getOptionalFields() {
+   protected HashMap<String, Object> getOptionalFields() {
       return optionalFields;
    }
       
    protected String getAccountTypeAsString() {
-      switch(type) {
+      switch(accountType) {
          case CHECKING:
             return "checking";
          case SAVINGS:
