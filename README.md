@@ -138,8 +138,6 @@ String bankAccountHref = bankAccountResponse.get("href");
 
 ## Contributing
 
-Review the [contributing guidelines](https://github.com/remear/balanced-android/blob/master/CONTRIBUTING.md)
-
 Please add yourself to the CONTRIBUTORS file when you submit your first pull request to the project.
 
 Please follow the code conventions utilized in the existing files.
