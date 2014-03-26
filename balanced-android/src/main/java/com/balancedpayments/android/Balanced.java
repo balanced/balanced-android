@@ -3,7 +3,6 @@ package com.balancedpayments.android;
 import android.content.Context;
 import com.balancedpayments.android.exception.*;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -159,6 +158,6 @@ public class Balanced
    
    private Map<String, Object> deserialize(String body) {
       Gson gson = new Gson();
-      return gson.fromJson(body, new TypeToken<Map<String, Object>>() {}.getType());
+      return gson.fromJson(body, HashMap.class);
    }
 }

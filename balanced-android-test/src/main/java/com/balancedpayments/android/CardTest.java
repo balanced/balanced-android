@@ -1,4 +1,4 @@
-package com.balancedpayments.android.test;
+package com.balancedpayments.android;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.balancedpayments.android.test;
+package com.balancedpayments.android;
 
 import com.balancedpayments.android.BankAccount;
 import com.balancedpayments.android.BankAccount.AccountType;

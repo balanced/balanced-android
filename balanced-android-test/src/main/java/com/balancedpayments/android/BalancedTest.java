@@ -1,4 +1,4 @@
-package com.balancedpayments.android.test;
+package com.balancedpayments.android;
 
 import android.test.AndroidTestCase;
 
