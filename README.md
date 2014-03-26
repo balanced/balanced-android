@@ -8,10 +8,8 @@ Current version : 1.0
 
 ## Requirements
 
-- junit 4.8.2
-- [gson](http://code.google.com/p/google-gson/) 2.2.2
+- [gson](http://code.google.com/p/google-gson/) 2.2.4
 - [httpclient](http://hc.apache.org/) 4.2.1
-- [commons-lang](http://commons.apache.org/lang/) 3.1
 
 These should be installable via maven.
 
@@ -140,8 +138,6 @@ String bankAccountHref = bankAccountResponse.get("href");
 
 ## Contributing
 
-Review the [contributing guidelines](https://github.com/remear/balanced-android/blob/master/CONTRIBUTING.md)
-
 Please add yourself to the CONTRIBUTORS file when you submit your first pull request to the project.
 
 Please follow the code conventions utilized in the existing files.
@@ -150,3 +146,7 @@ Please follow the code conventions utilized in the existing files.
 
 Please include tests with all new code. Also, all existing tests must pass before new code can be merged.
 
+- Install the Android SDK
+- Set ANDROID_HOME to the Android SDK path
+- Create an Android emulator instance. For example, ```android create avd --force -n test -t android-19 --abi armeabi-v7a```. You might want to install one that is optimized for your machine.
+- Run ```mvn clean install```
