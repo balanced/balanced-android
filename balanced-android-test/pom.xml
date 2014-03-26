@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.balancedpayments.android</groupId>
         <artifactId>balanced-android-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>balanced-android-test</artifactId>
@@ -41,19 +41,16 @@
             <version>4.2.1</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android-test</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <!-- the target apk, which we will test. will automatically be deployed to device in pre-integration-test
             phase. -->
@@ -62,8 +59,6 @@
             <version>${project.version}</version>
             <type>apk</type>
         </dependency>
-
-
         <dependency>
             <groupId>com.balancedpayments.android</groupId>
             <artifactId>balanced-android</artifactId>
@@ -71,7 +66,6 @@
             <scope>provided</scope>
             <type>jar</type>
         </dependency>
-
     </dependencies>
 
     <build>
