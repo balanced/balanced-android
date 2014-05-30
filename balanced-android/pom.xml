@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>balanced-android</artifactId>
-    <packaging>apk</packaging>
+    <packaging>jar</packaging>
 
     <name>balanced-android - Library</name>
 
@@ -35,6 +35,47 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <artifactId>android-maven-plugin</artifactId>
+                    <extensions>true</extensions>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            com.jayway.maven.plugins.android.generation2
+                                        </groupId>
+                                        <artifactId>
+                                            android-maven-plugin
+                                        </artifactId>
+                                        <goals>
+                                            <goal>
+                                                generate-sources
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <!--annotaion end -->
+
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
