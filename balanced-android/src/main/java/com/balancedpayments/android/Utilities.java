@@ -53,7 +53,6 @@ public class Utilities {
       capabilities.put("capabilities_carrier", carrier);
       capabilities.put("capabilities_language", getLocale());
 
-      //[[[NSBundle mainBundle] bundleIdentifier] length] > 0 ? [[NSBundle mainBundle] bundleIdentifier] : @"Unspecified Bundle ID", @"capabilities_bundle_identifier",
       return capabilities;
    }
 
