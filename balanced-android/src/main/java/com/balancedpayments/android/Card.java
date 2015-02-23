@@ -62,10 +62,9 @@ public class Card extends FundingInstrument {
    }
    
    private boolean isExpired() {
-      if (expirationMonth > 12 || expirationYear < 1) { return false; }
+      if (expirationMonth > 12 || expirationYear < 1) { return true; }
     
       Calendar cal = Calendar.getInstance();
-      cal.setTime(new Date());
     
       return cal.get(Calendar.YEAR) > expirationYear || (cal.get(Calendar.YEAR) == expirationYear
                                                          && cal.get(Calendar.MONTH) >= expirationMonth);
