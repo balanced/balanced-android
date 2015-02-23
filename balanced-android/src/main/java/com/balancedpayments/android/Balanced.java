@@ -117,10 +117,10 @@ public class Balanced
 
     private class AsynchCreateFundingInstrument extends AsyncTask<HashMap<String, Object>, Object, Map<String, Object>> {
 
-        public OnTaskCompleted taskCompleted;
-        public String number;
-        public Integer expMonth;
-        public Integer expYear;
+        private OnTaskCompleted taskCompleted;
+        private String number;
+        private Integer expMonth;
+        private Integer expYear;
 
         public AsynchCreateFundingInstrument(OnTaskCompleted taskCompleted, String number, Integer expMonth, Integer expYear) {
             this.taskCompleted = taskCompleted;
